@@ -44,8 +44,8 @@ esp_err_t ClockMachine::readNVSValues() {
 void ClockMachine::writeNVSDefaultValues() {
     alarm_time.hour = 7;
     alarm_time.minute = 0;
-    strcpy((char*)wifi_credentials.ssid, "Dummy");
-    strcpy((char*)wifi_credentials.password, "123456");
+    strcpy((char*)wifi_credentials.ssid, "WaderLAN");
+    strcpy((char*)wifi_credentials.password, "affeaffeaf");
 
     saveAlarmTimeInNVS();
     saveWifiCredentialsInNVS();
