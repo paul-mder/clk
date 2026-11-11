@@ -48,67 +48,15 @@ void TimeState::buttonLongPressed(ClockMachine* clock) {
 }
 
 void TimeState::encoderRotated(ClockMachine* clock, rotary_encoder_pos_t position, rotary_encoder_dir_t direction) {
-    if (clock->getWifiTime()->isWifiConnected()) {
-        clock->getDisplay()->setIncreasedBrightness(true);
-        clock->triggerTimer(3000);
-    } else {
-        clock->setState(WPSState::getInstance());
-    }
+    clock->getDisplay()->setIncreasedBrightness(true);
+    clock->triggerTimer(3000);
 }
 
 void TimeState::exit(ClockMachine* clock) {}
 TimeState::~TimeState() {}
 
 
-//-------------//
-//  WPS STATE  //
-//-------------//
 
-ClockState& WPSState::getInstance() {
-    static WPSState singleton;
-    return singleton;
-}
-
-void WPSState::enter(ClockMachine* clock) {
-    clock->getDisplay()->updateContent(D_E_BED_TIME, &(clock->alarm_time), D_A_OFF);
-    blink = true;
-    clock->getDisplay()->updateContent(D_E_WIFI_SETTING, D_A_ON);
-    clock->getDisplay()->setIncreasedBrightness(true);
-    clock->getWifiTime()->startWPS();
-    clock->triggerTimer(500);
-}
-
-void WPSState::run(ClockMachine* clock) {
-    if (clock->getWifiTime()->isWifiConnected()) {
-        clock->saveWifiCredentialsInNVS();
-        clock->setState(TimeState::getInstance());
-    }
-}
-
-void WPSState::timerExpired(ClockMachine* clock) {
-    blink = !blink;
-    display_action_t action = blink ? D_A_ON : D_A_OFF;
-    clock->getDisplay()->updateContent(D_E_WIFI_SETTING, action);
-    clock->triggerTimer(500);
-}
-
-void WPSState::buttonShortPressed(ClockMachine* clock) {}
-void WPSState::buttonLongPressed(ClockMachine* clock) {}
-
-void WPSState::encoderRotated(ClockMachine* clock, rotary_encoder_pos_t position, rotary_encoder_dir_t direction) {
-    clock->getWifiTime()->stopWPS();
-    clock->setState(TimeState::getInstance());
-}
-
-void WPSState::exit(ClockMachine* clock) {
-    clock->getDisplay()->updateContent(D_E_WIFI_SETTING, D_A_OFF);
-    display_action_t action = clock->is_alarm_set ? D_A_ON : D_A_OFF;
-    clock_time_t bed_time = clock->getTimeToAlarm(clock->stored_time, clock->alarm_time);
-    clock->getDisplay()->updateContent(D_E_BED_TIME, &bed_time, action);
-    clock->checkWifiStatus(true);
-}
-
-WPSState::~WPSState() {}
 
 
 //---------------//
@@ -298,3 +246,5 @@ void SetAlarmState::exit(ClockMachine* clock) {
 }
 
 SetAlarmState::~SetAlarmState() {}
+
+

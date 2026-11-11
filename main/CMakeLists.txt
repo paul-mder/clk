@@ -7,4 +7,15 @@ idf_component_register(
         "wifi_time.cpp"
         "rotary_encoder.cpp"
     INCLUDE_DIRS "."
+    REQUIRES
+        esp_http_server
+        nvs_flash
+        esp_wifi
+        esp_netif
+        esp_event
+        esp_timer
+        driver
+        esp_adc
+        LovyanGFX
 )
+

@@ -18,6 +18,11 @@
 #define LIGHT_ADC_CHANNEL        ADC_CHANNEL_2
 #define LIGHT_ADC_ATTEN          ADC_ATTEN_DB_0
 
+#define WIFI_SSID                "Kalles’s Nokia Ringo"
+#define WIFI_PASSWORD            "maxstinkt2"
+
+#define DISPLAY_TIMEOUT_S        60
+
 typedef struct {
     uint8_t hour;
     uint8_t minute;
@@ -28,4 +33,4 @@ typedef struct {
     uint8_t password[64];
 } wifi_credentials_t;
 
-#endif // _INCLUDE_CLOCK_COMMON_HPP_
+#endif

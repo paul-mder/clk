@@ -5,11 +5,11 @@
 #include "rotary_encoder.hpp"
 #include "wifi_time.hpp"
 #include "display.hpp"
+#include "esp_http_server.h"
 
 #define NVS_STORAGE          "storage"
 #define NVS_ALARM_HOUR       "alarm_hour"
 #define NVS_ALARM_MINUTE     "alarm_minute"
-#define NVS_WIFI_CREDENTIALS "credentials"
 
 class ClockState;
 
@@ -17,7 +17,6 @@ class ClockMachine {
   public:
     ClockMachine(RotaryEncoder* encoder_ref);
     void saveAlarmTimeInNVS();
-    void saveWifiCredentialsInNVS();
     void setState(ClockState& newState);
     clock_time_t getTimeToAlarm(clock_time_t current_time, clock_time_t alarm_time);
     WifiTime* getWifiTime();
@@ -29,6 +28,7 @@ class ClockMachine {
     void buttonShortPressed();
     void buttonLongPressed();
     void encoderRotated(rotary_encoder_pos_t position, rotary_encoder_dir_t direction);
+    void wakeDisplay();
     ~ClockMachine();
 
     clock_time_t stored_time;
@@ -44,15 +44,24 @@ class ClockMachine {
     esp_err_t readNVSValues();
     void writeNVSDefaultValues();
     void checkTimeUpdate(void);
+    void startWebServer(void);
+    static esp_err_t handleRoot(httpd_req_t *req);
+    static esp_err_t handleSetAlarm(httpd_req_t *req);
+    static esp_err_t handleGetStatus(httpd_req_t *req);
 
     ClockState* state;
     WifiTime wifi_time;
     Display display;
     RotaryEncoder* encoder;
-    int64_t active_timer_us;
-    int64_t trigger_timestamp_us;
-    wifi_credentials_t wifi_credentials;
+    int64_t active_timer_us = 0;
+    int64_t trigger_timestamp_us = 0;
     bool last_wifi_connected_status;
+    httpd_handle_t server = NULL;
+
+    // Display-Timeout
+    int64_t last_interaction_us = 0;
+    bool display_is_off = false;
+    bool next_input_is_wakeup = false;
 };
 
 #endif /* _INCLUDE_CLOCK_MACHINE_HPP_ */

@@ -55,10 +55,11 @@ class Display {
     bool show_alarm = false;
 
     static void monitorBrightnessTask(void *pvParameter);
-    void setBrightness(uint8_t brightness_level);
+    
     void controlBrightness(void);
 
    public:
+    void setBrightness(uint8_t brightness_level);
     void init(void);
     void updateContent(display_element_t element, void *value, display_action_t action);
     void updateContent(display_element_t element, display_action_t action);
@@ -68,3 +69,4 @@ class Display {
 };
 
 #endif // _INCLUDE_DISPLAY_HPP
+
